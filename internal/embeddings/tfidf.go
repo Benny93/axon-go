@@ -169,7 +169,7 @@ func tokenize(text string) []string {
 
 	// Split on non-alphanumeric characters
 	terms := strings.FieldsFunc(text, func(r rune) bool {
-		return !((r >= 'a' && r <= 'z') || (r >= '0' && r <= '9'))
+		return (r < 'a' || r > 'z') && (r < '0' || r > '9')
 	})
 
 	// Filter out very short terms

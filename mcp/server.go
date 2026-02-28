@@ -468,23 +468,23 @@ func handleQuery(storage StorageBackend, query string, limit int) (string, error
 // formatHybridResults formats hybrid search results as markdown.
 func formatHybridResults(results []storage.HybridSearchResult, query string) string {
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("Found %d results for '%s' (hybrid search):\n\n", len(results), query))
+	fmt.Fprintf(&sb, "Found %d results for '%s' (hybrid search):\n\n", len(results), query)
 
 	for i, r := range results {
-		sb.WriteString(fmt.Sprintf("%d. **%s** (%s)\n", i+1, r.NodeName, r.Label))
-		sb.WriteString(fmt.Sprintf("   File: %s\n", r.FilePath))
-		sb.WriteString(fmt.Sprintf("   Score: %.3f\n", r.Score))
+		fmt.Fprintf(&sb, "%d. **%s** (%s)\n", i+1, r.NodeName, r.Label)
+		fmt.Fprintf(&sb, "   File: %s\n", r.FilePath)
+		fmt.Fprintf(&sb, "   Score: %.3f\n", r.Score)
 		if r.Snippet != "" {
 			snippet := r.Snippet
 			if len(snippet) > 200 {
 				snippet = snippet[:200] + "..."
 			}
-			sb.WriteString(fmt.Sprintf("   %s\n", snippet))
+			fmt.Fprintf(&sb, "   %s\n", snippet)
 		}
-		sb.WriteString("\n")
+		fmt.Fprintln(&sb)
 	}
 
-	sb.WriteString("Next: Use `axon_context` on a specific symbol for the full picture.")
+	fmt.Fprint(&sb, "Next: Use `axon_context` on a specific symbol for the full picture.")
 
 	return sb.String()
 }
@@ -492,23 +492,23 @@ func formatHybridResults(results []storage.HybridSearchResult, query string) str
 // formatSearchResults formats FTS search results as markdown.
 func formatSearchResults(results []storage.SearchResult, query string) string {
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("Found %d results for '%s':\n\n", len(results), query))
+	fmt.Fprintf(&sb, "Found %d results for '%s':\n\n", len(results), query)
 
 	for i, r := range results {
-		sb.WriteString(fmt.Sprintf("%d. **%s** (%s)\n", i+1, r.NodeName, r.Label))
-		sb.WriteString(fmt.Sprintf("   File: %s\n", r.FilePath))
-		sb.WriteString(fmt.Sprintf("   Score: %.3f\n", r.Score))
+		fmt.Fprintf(&sb, "%d. **%s** (%s)\n", i+1, r.NodeName, r.Label)
+		fmt.Fprintf(&sb, "   File: %s\n", r.FilePath)
+		fmt.Fprintf(&sb, "   Score: %.3f\n", r.Score)
 		if r.Snippet != "" {
 			snippet := r.Snippet
 			if len(snippet) > 200 {
 				snippet = snippet[:200] + "..."
 			}
-			sb.WriteString(fmt.Sprintf("   %s\n", snippet))
+			fmt.Fprintf(&sb, "   %s\n", snippet)
 		}
-		sb.WriteString("\n")
+		fmt.Fprintln(&sb)
 	}
 
-	sb.WriteString("Next: Use `axon_context` on a specific symbol for the full picture.")
+	fmt.Fprint(&sb, "Next: Use `axon_context` on a specific symbol for the full picture.")
 
 	return sb.String()
 }
@@ -550,14 +550,14 @@ func handleContext(storage StorageBackend, symbol string) (string, error) {
 	}
 
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("Context for symbol: **%s**\n\n", symbol))
+	fmt.Fprintf(&sb, "Context for symbol: **%s**\n\n", symbol)
 
 	// Get callers using node ID
 	callers, _ := storage.GetCallers(context.Background(), nodeID)
 	if len(callers) > 0 {
-		sb.WriteString(fmt.Sprintf("## Callers (%d)\n", len(callers)))
+		fmt.Fprintf(&sb, "## Callers (%d)\n", len(callers))
 		for _, c := range callers {
-			sb.WriteString(fmt.Sprintf("- %s (%s) in %s\n", c.Name, c.Label, c.FilePath))
+			fmt.Fprintf(&sb, "- %s (%s) in %s\n", c.Name, c.Label, c.FilePath)
 		}
 		sb.WriteString("\n")
 	}
@@ -565,18 +565,18 @@ func handleContext(storage StorageBackend, symbol string) (string, error) {
 	// Get callees using node ID
 	callees, _ := storage.GetCallees(context.Background(), nodeID)
 	if len(callees) > 0 {
-		sb.WriteString(fmt.Sprintf("## Callees (%d)\n", len(callees)))
+		fmt.Fprintf(&sb, "## Callees (%d)\n", len(callees))
 		for _, c := range callees {
-			sb.WriteString(fmt.Sprintf("- %s (%s) in %s\n", c.Name, c.Label, c.FilePath))
+			fmt.Fprintf(&sb, "- %s (%s) in %s\n", c.Name, c.Label, c.FilePath)
 		}
-		sb.WriteString("\n")
+		fmt.Fprintln(&sb)
 	}
 
 	if len(callers) == 0 && len(callees) == 0 {
-		sb.WriteString("No connections found. Symbol may be isolated or not yet indexed.\n")
+		fmt.Fprint(&sb, "No connections found. Symbol may be isolated or not yet indexed.\n")
 	}
 
-	sb.WriteString("\nNext: Use `axon_impact` if planning changes to this symbol.")
+	fmt.Fprint(&sb, "\nNext: Use `axon_impact` if planning changes to this symbol.")
 
 	return sb.String(), nil
 }
@@ -593,15 +593,15 @@ func handleImpact(storage StorageBackend, symbol string, depth int) (string, err
 	}
 
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("Impact analysis for: **%s** (depth: %d)\n\n", symbol, depth))
+	fmt.Fprintf(&sb, "Impact analysis for: **%s** (depth: %d)\n\n", symbol, depth)
 
 	// Traverse callers (blast radius) using node ID
 	affected, _ := storage.Traverse(context.Background(), nodeID, depth, "callers")
 
 	if len(affected) == 0 {
-		sb.WriteString("No affected symbols found. This symbol appears to be isolated.\n")
+		fmt.Fprint(&sb, "No affected symbols found. This symbol appears to be isolated.\n")
 	} else {
-		sb.WriteString(fmt.Sprintf("## Affected Symbols (%d)\n\n", len(affected)))
+		fmt.Fprintf(&sb, "## Affected Symbols (%d)\n\n", len(affected))
 
 		// Group by depth
 		byDepth := make(map[int][]*graph.GraphNode)
@@ -623,11 +623,11 @@ func handleImpact(storage StorageBackend, symbol string, depth int) (string, err
 				depthLabel = "Transitive"
 			}
 
-			sb.WriteString(fmt.Sprintf("### Depth %d (%s)\n", d, depthLabel))
+			fmt.Fprintf(&sb, "### Depth %d (%s)\n", d, depthLabel)
 			for _, n := range nodes {
-				sb.WriteString(fmt.Sprintf("- %s (%s) in %s\n", n.Name, n.Label, n.FilePath))
+				fmt.Fprintf(&sb, "- %s (%s) in %s\n", n.Name, n.Label, n.FilePath)
 			}
-			sb.WriteString("\n")
+			fmt.Fprintln(&sb)
 		}
 	}
 
@@ -658,9 +658,9 @@ func handleDeadCode(storage StorageBackend) (string, error) {
 		sb.WriteString("- Dunder methods or overrides\n\n")
 
 		nodeCount := storage.NodeCount()
-		sb.WriteString(fmt.Sprintf("Knowledge graph contains **%d nodes**, all reachable.\n", nodeCount))
+		fmt.Fprintf(&sb, "Knowledge graph contains **%d nodes**, all reachable.\n", nodeCount)
 	} else {
-		sb.WriteString(fmt.Sprintf("⚠️ **Found %d dead code symbols**\n\n", len(deadNodes)))
+		fmt.Fprintf(&sb, "⚠️ **Found %d dead code symbols**\n\n", len(deadNodes))
 		sb.WriteString("**Exempt from dead code detection:**\n")
 		sb.WriteString("- Entry points (main functions, test functions)\n")
 		sb.WriteString("- Exported/public symbols\n")
@@ -676,15 +676,15 @@ func handleDeadCode(storage StorageBackend) (string, error) {
 
 		sb.WriteString("**Dead code by file:**\n\n")
 		for filePath, nodes := range byFile {
-			sb.WriteString(fmt.Sprintf("### %s (%d symbols)\n", filePath, len(nodes)))
+			fmt.Fprintf(&sb, "### %s (%d symbols)\n", filePath, len(nodes))
 			for _, node := range nodes {
-				sb.WriteString(fmt.Sprintf("- `%s` (%s) at line %d\n", node.Name, node.Label, node.StartLine))
+				fmt.Fprintf(&sb, "- `%s` (%s) at line %d\n", node.Name, node.Label, node.StartLine)
 			}
-			sb.WriteString("\n")
+			fmt.Fprintln(&sb)
 		}
 	}
 
-	sb.WriteString("\n**Next:** Review dead code symbols and consider removing or integrating them.")
+	fmt.Fprint(&sb, "\n**Next:** Review dead code symbols and consider removing or integrating them.")
 
 	return sb.String(), nil
 }
@@ -706,7 +706,7 @@ func handleCypher(storage StorageBackend, query string) (string, error) {
 
 	var sb strings.Builder
 	sb.WriteString("## Cypher Query Result\n\n")
-	sb.WriteString(fmt.Sprintf("Query: `%s`\n\n", query))
+	fmt.Fprintf(&sb, "Query: `%s`\n\n", query)
 	sb.WriteString("Raw Cypher queries are not yet supported. This feature will allow advanced graph queries.\n")
 
 	return sb.String(), nil
@@ -717,8 +717,8 @@ func handleCypher(storage StorageBackend, query string) (string, error) {
 func getOverview(storage StorageBackend) string {
 	var sb strings.Builder
 	sb.WriteString("# Axon Knowledge Graph Overview\n\n")
-	sb.WriteString(fmt.Sprintf("**Nodes:** %d\n", storage.NodeCount()))
-	sb.WriteString(fmt.Sprintf("**Relationships:** %d\n", storage.RelationshipCount()))
+	fmt.Fprintf(&sb, "**Nodes:** %d\n", storage.NodeCount())
+	fmt.Fprintf(&sb, "**Relationships:** %d\n", storage.RelationshipCount())
 	sb.WriteString("\n## Node Types\n\n")
 	sb.WriteString("- File: Source code files\n")
 	sb.WriteString("- Folder: Directories\n")
@@ -789,24 +789,24 @@ func handleDetectChanges(storage StorageBackend, files []string) (string, error)
 
 	var sb strings.Builder
 	sb.WriteString("# Change Detection Report\n\n")
-	sb.WriteString(fmt.Sprintf("## Changed Files (%d)\n\n", len(files)))
+	fmt.Fprintf(&sb, "## Changed Files (%d)\n\n", len(files))
 	for _, file := range files {
-		sb.WriteString(fmt.Sprintf("- `%s`\n", file))
+		fmt.Fprintf(&sb, "- `%s`\n", file)
 	}
 
-	sb.WriteString(fmt.Sprintf("\n## Changed Symbols (%d)\n\n", len(changedSymbols)))
+	fmt.Fprintf(&sb, "\n## Changed Symbols (%d)\n\n", len(changedSymbols))
 	for _, sym := range changedSymbols {
-		sb.WriteString(fmt.Sprintf("- **%s** (%s) in `%s`\n", sym.Name, sym.Label, sym.FilePath))
+		fmt.Fprintf(&sb, "- **%s** (%s) in `%s`\n", sym.Name, sym.Label, sym.FilePath)
 	}
 
 	// Get affected symbols (callers)
 	affectedSymbols := getAffectedSymbols(ctx, storage, changedSymbols)
 
 	if len(affectedSymbols) > 0 {
-		sb.WriteString(fmt.Sprintf("\n## Impact Analysis (%d affected symbols)\n\n", len(affectedSymbols)))
+		fmt.Fprintf(&sb, "\n## Impact Analysis (%d affected symbols)\n\n", len(affectedSymbols))
 		sb.WriteString("These symbols may be affected by the changes:\n\n")
 		for _, sym := range affectedSymbols {
-			sb.WriteString(fmt.Sprintf("- **%s** (%s) in `%s`\n", sym.Name, sym.Label, sym.FilePath))
+			fmt.Fprintf(&sb, "- **%s** (%s) in `%s`\n", sym.Name, sym.Label, sym.FilePath)
 		}
 		sb.WriteString("\n**Recommendation:** Review and test these affected symbols after making changes.\n")
 	} else {

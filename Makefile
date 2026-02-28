@@ -35,7 +35,7 @@ COVERAGE_HTML := $(COVERAGE_DIR)/index.html
 
 # Tools
 GOLANGCI_LINT := golangci-lint
-GOLANGCI_LINT_VERSION := latest
+GOLANGCI_LINT_VERSION := v2.10.1
 STATICCHECK := staticcheck
 GOVULNCHECK := govulncheck
 GOTESTSUM := gotestsum
@@ -222,7 +222,7 @@ deps-audit: ## Check for vulnerable dependencies
 install-tools: ## Install development tools from tools.go
 	@echo "$(BLUE)Installing development tools...$(NC)"
 	$(GOMOD) download
-	@$(GOBUILD) -o $(GOPATH)/bin/golangci-lint github.com/golangci/golangci-lint/cmd/golangci-lint@$(GOLANGCI_LINT_VERSION)
+	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOPATH)/bin v$(GOLANGCI_LINT_VERSION)
 	@$(GOBUILD) -o $(GOPATH)/bin/gotestsum gotest.tools/gotestsum
 	@$(GOBUILD) -o $(GOPATH)/bin/govulncheck golang.org/x/vuln/cmd/govulncheck
 	@$(GOBUILD) -o $(GOPATH)/bin/staticcheck honnef.co/go/tools/cmd/staticcheck
