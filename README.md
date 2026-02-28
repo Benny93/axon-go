@@ -2,7 +2,7 @@
 
 **The Go rewrite of Axon — Building the knowledge graph for AI code agents.**
 
-> ⚠️ **This is a Go rewrite of the original [Axon](https://github.com/harshkedia177/axon) project by Harsh Kedia.** All credit for the original concept, design, and Python implementation goes to the original author. This Go implementation aims to provide better performance, single-binary deployment, and improved concurrency while maintaining 100% feature parity.
+> ⚠️ **This is a Go rewrite of the original [Axon](https://github.com/harshkedia177/axon) project by Harsh Kedia.** All credit for the original concept, design, and Python implementation goes to the original author. This Go implementation aims to provide single-binary deployment, improved concurrency, and 100% feature parity.
 
 Indexes any codebase into a structural knowledge graph — every dependency, call chain, cluster, and execution flow — then exposes it through smart MCP tools so AI agents never miss code.
 
@@ -27,14 +27,12 @@ Done in 0.8s — 623 symbols, 1,847 edges, 8 clusters, 34 flows
 
 ## Why Go?
 
-The Go rewrite provides significant improvements over the Python original:
+The Go rewrite provides several improvements over the Python original:
 
-- ✅ **10-50x faster performance** — Native compilation, concurrent processing
 - ✅ **Single binary deployment** — No Python runtime, pip, or virtualenv needed
 - ✅ **100% feature parity** — All 12 pipeline phases, 13 CLI commands, full MCP server
 - ✅ **Multi-language support** — Go, Python, and TypeScript parsers
 - ✅ **Better concurrency** — Goroutines for parallel file processing
-- ✅ **Lower memory footprint** — ~50MB vs ~500MB
 - ✅ **Watch mode** — Live re-indexing on file changes
 
 ---
@@ -358,17 +356,6 @@ make clean
 
 ---
 
-## Performance Comparison
-
-| Metric | Python Axon | Axon-Go | Improvement |
-|--------|-------------|---------|-------------|
-| Index time (1000 files) | ~15s | ~0.8s | **18x faster** |
-| Memory usage | ~500MB | ~50MB | **10x less** |
-| Binary size | N/A (Python) | ~20MB | Single binary |
-| Startup time | ~2s | ~0.1s | **20x faster** |
-
----
-
 ## Migration from Python Axon
 
 ```bash
@@ -388,10 +375,8 @@ axon-go analyze .
 - Output formats are compatible
 
 **What improves:**
-- Performance (10-50x faster)
-- Memory usage (10x less)
-- Deployment (single binary)
-- Watch mode (live re-indexing)
+- Single binary deployment
+- Improved concurrency with goroutines
 
 ---
 
@@ -403,7 +388,7 @@ This project is a Go rewrite of **[Axon](https://github.com/harshkedia177/axon)*
 - **Python Implementation:** Harsh Kedia
 - **Go Implementation:** Benjamin Vollmer
 
-All credit for the original vision, architecture, and Python implementation belongs to the original author. This Go implementation aims to preserve and extend that work with better performance and deployment characteristics.
+All credit for the original vision, architecture, and Python implementation belongs to the original author. This Go implementation aims to preserve and extend that work with improved deployment characteristics.
 
 ---
 
