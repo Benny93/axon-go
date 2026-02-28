@@ -141,20 +141,71 @@ func (m *MemoryBackend) FTSSearch(ctx context.Context, query string, limit int) 
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 
-	var results []SearchResult
+	// Collect all matching nodes first
+	var allResults []SearchResult
 	for _, node := range m.nodes {
-		if len(results) >= limit {
-			break
+		// Simple substring match for query in node name and file path
+		if containsIgnoreCase(node.Name, query) || containsIgnoreCase(node.FilePath, query) {
+			allResults = append(allResults, SearchResult{
+				NodeID:   node.ID,
+				NodeName: node.Name,
+				FilePath: node.FilePath,
+				Label:    string(node.Label),
+				Score:    1.0,
+			})
 		}
-		results = append(results, SearchResult{
-			NodeID:   node.ID,
-			NodeName: node.Name,
-			FilePath: node.FilePath,
-			Label:    string(node.Label),
-			Score:    1.0,
-		})
 	}
-	return results, nil
+
+	// Sort by NodeID for deterministic order
+	sortResultsByID(allResults)
+
+	// Return up to limit results
+	if len(allResults) > limit {
+		allResults = allResults[:limit]
+	}
+	return allResults, nil
+}
+
+// sortResultsByID sorts results by NodeID using bubble sort (simple, no deps).
+func sortResultsByID(results []SearchResult) {
+	n := len(results)
+	for i := 0; i < n-1; i++ {
+		for j := 0; j < n-i-1; j++ {
+			if results[j].NodeID > results[j+1].NodeID {
+				results[j], results[j+1] = results[j+1], results[j]
+			}
+		}
+	}
+}
+
+// containsIgnoreCase returns true if s contains substr (case-insensitive).
+func containsIgnoreCase(s, substr string) bool {
+	return len(s) >= len(substr) && containsLower(s, substr)
+}
+
+// containsLower checks if s contains substr (both lowercase).
+func containsLower(s, substr string) bool {
+	s = toLower(s)
+	substr = toLower(substr)
+	for i := 0; i <= len(s)-len(substr); i++ {
+		if s[i:i+len(substr)] == substr {
+			return true
+		}
+	}
+	return false
+}
+
+// toLower converts a string to lowercase.
+func toLower(s string) string {
+	result := make([]byte, len(s))
+	for i := 0; i < len(s); i++ {
+		c := s[i]
+		if c >= 'A' && c <= 'Z' {
+			c = c + ('a' - 'A')
+		}
+		result[i] = c
+	}
+	return string(result)
 }
 
 // VectorSearch implements StorageBackend.
