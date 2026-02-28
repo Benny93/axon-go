@@ -22,6 +22,7 @@ Generating embeddings...       623 vectors stored
 Done in 0.8s — 623 symbols, 1,847 edges, 8 clusters, 34 flows
 ```
 
+![demo](demo.gif)
 ---
 
 ## Why Go?
