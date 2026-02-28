@@ -141,16 +141,19 @@ bench-mem: check-go-version ## Run benchmarks with memory profiling
 
 lint: check-go-version ## Run golangci-lint
 	@echo "$(BLUE)Running linters...$(NC)"
+	@command -v $(GOLANGCI_LINT) >/dev/null 2>&1 || { echo "$(YELLOW)golangci-lint not found, installing...$(NC)"; $(MAKE) install-tools; }
 	$(GOLANGCI_LINT) run --config .golangci.yml
 	@echo "$(GREEN)✓ Linting passed$(NC)"
 
 lint-fix: check-go-version ## Run linters with auto-fix
 	@echo "$(BLUE)Running linters (auto-fix)...$(NC)"
+	@command -v $(GOLANGCI_LINT) >/dev/null 2>&1 || { echo "$(YELLOW)golangci-lint not found, installing...$(NC)"; $(MAKE) install-tools; }
 	$(GOLANGCI_LINT) run --config .golangci.yml --fix
 	@echo "$(GREEN)✓ Linting complete$(NC)"
 
 lint-full: check-go-version ## Run all linters (slower)
 	@echo "$(BLUE)Running full lint...$(NC)"
+	@command -v $(GOLANGCI_LINT) >/dev/null 2>&1 || { echo "$(YELLOW)golangci-lint not found, installing...$(NC)"; $(MAKE) install-tools; }
 	$(GOLANGCI_LINT) run --config .golangci.yml --fast=false
 	@echo "$(GREEN)✓ Full lint passed$(NC)"
 
@@ -214,6 +217,17 @@ deps-update: ## Update dependencies
 deps-audit: ## Check for vulnerable dependencies
 	@echo "$(BLUE)Checking for vulnerabilities...$(NC)"
 	$(GOVULNCHECK) ./...
+
+install-tools: ## Install development tools from tools.go
+	@echo "$(BLUE)Installing development tools...$(NC)"
+	$(GOMOD) download
+	@$(GOBUILD) -o $(GOPATH)/bin/golangci-lint github.com/golangci/golangci-lint/cmd/golangci-lint
+	@$(GOBUILD) -o $(GOPATH)/bin/gotestsum gotest.tools/gotestsum
+	@$(GOBUILD) -o $(GOPATH)/bin/govulncheck golang.org/x/vuln/cmd/govulncheck
+	@$(GOBUILD) -o $(GOPATH)/bin/staticcheck honnef.co/go/tools/cmd/staticcheck
+	@$(GOBUILD) -o $(GOPATH)/bin/gocyclo github.com/fzipp/gocyclo/cmd/gocyclo
+	@$(GOBUILD) -o $(GOPATH)/bin/goimports golang.org/x/tools/cmd/goimports
+	@echo "$(GREEN)✓ Development tools installed$(NC)"
 
 ##@ Documentation
 

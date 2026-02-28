@@ -1,4 +1,4 @@
-# Axon-Go
+# Axon-Go An MCP server knowledge graph for AI code agents.
 
 **The Go rewrite of Axon — Building the knowledge graph for AI code agents.**
 
