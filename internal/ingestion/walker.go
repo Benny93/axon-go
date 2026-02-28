@@ -35,14 +35,14 @@ type FileEntry struct {
 
 // Supported file extensions and their languages.
 var supportedExtensions = map[string]string{
-	".py":    "python",
-	".ts":    "typescript",
-	".tsx":   "typescript",
-	".js":    "javascript",
-	".jsx":   "javascript",
-	".mjs":   "javascript",
-	".cjs":   "javascript",
-	".go":    "go",
+	".py":  "python",
+	".ts":  "typescript",
+	".tsx": "typescript",
+	".js":  "javascript",
+	".jsx": "javascript",
+	".mjs": "javascript",
+	".cjs": "javascript",
+	".go":  "go",
 }
 
 // Default patterns to ignore (in addition to .gitignore).
@@ -74,15 +74,15 @@ func WalkRepo(repoPath string, patterns []gitignore.Pattern) ([]FileEntry, error
 
 	// Combine default patterns with loaded patterns
 	allPatterns := make([]gitignore.Pattern, 0, len(defaultIgnorePatterns)+len(patterns))
-	
+
 	// Add default patterns
 	for _, p := range defaultIgnorePatterns {
 		allPatterns = append(allPatterns, gitignore.ParsePattern(p, nil))
 	}
-	
+
 	// Add loaded patterns from .gitignore
 	allPatterns = append(allPatterns, patterns...)
-	
+
 	matcher := gitignore.NewMatcher(allPatterns)
 
 	err := filepath.WalkDir(repoPath, func(path string, d fs.DirEntry, err error) error {

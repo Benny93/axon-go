@@ -19,7 +19,7 @@ func TestProcessStructure(t *testing.T) {
 
 	t.Run("CreatesFolderAndFileNodes", func(t *testing.T) {
 		g := graph.NewKnowledgeGraph()
-		
+
 		entries := []FileEntry{
 			{Path: "/repo/main.go", RelPath: "main.go", Language: "go"},
 			{Path: "/repo/src/app.go", RelPath: "src/app.go", Language: "go"},
@@ -29,7 +29,7 @@ func TestProcessStructure(t *testing.T) {
 
 		// Should have folder and file nodes
 		assert.GreaterOrEqual(t, g.NodeCount(), 2)
-		
+
 		// Check for main.go file node
 		fileNode := g.GetNode("file:main.go")
 		assert.NotNil(t, fileNode)
@@ -38,7 +38,7 @@ func TestProcessStructure(t *testing.T) {
 
 	t.Run("CreatesContainsRelationships", func(t *testing.T) {
 		g := graph.NewKnowledgeGraph()
-		
+
 		entries := []FileEntry{
 			{Path: "/repo/src/app.go", RelPath: "src/app.go", Language: "go"},
 		}
@@ -56,7 +56,7 @@ func TestProcessParsing(t *testing.T) {
 
 	t.Run("ParsesGoFiles", func(t *testing.T) {
 		g := graph.NewKnowledgeGraph()
-		
+
 		content := []byte(`
 package main
 
@@ -73,10 +73,10 @@ type User struct {
 		}
 
 		parseData := ProcessParsing(entries, g)
-		
+
 		assert.NotNil(t, parseData)
 		assert.NotEmpty(t, parseData.Files)
-		
+
 		// Check parsed symbols
 		fileData, ok := parseData.Files["test.go"]
 		assert.True(t, ok)
@@ -85,14 +85,14 @@ type User struct {
 
 	t.Run("HandlesMultipleFiles", func(t *testing.T) {
 		g := graph.NewKnowledgeGraph()
-		
+
 		entries := []FileEntry{
 			{Path: "/repo/a.go", RelPath: "a.go", Language: "go", Content: []byte("package main\nfunc A() {}")},
 			{Path: "/repo/b.go", RelPath: "b.go", Language: "go", Content: []byte("package main\nfunc B() {}")},
 		}
 
 		parseData := ProcessParsing(entries, g)
-		
+
 		assert.Len(t, parseData.Files, 2)
 	})
 }
@@ -102,11 +102,11 @@ func TestProcessImports(t *testing.T) {
 
 	t.Run("CreatesImportRelationships", func(t *testing.T) {
 		g := graph.NewKnowledgeGraph()
-		
+
 		// Create file nodes first
 		g.AddNode(&graph.GraphNode{ID: "file:a.go", Label: graph.NodeFile, FilePath: "a.go"})
 		g.AddNode(&graph.GraphNode{ID: "file:./b.go", Label: graph.NodeFile, FilePath: "./b.go"})
-		
+
 		parseData := &ParseData{
 			Files: map[string]*parsers.ParseResult{
 				"a.go": {
@@ -130,11 +130,11 @@ func TestProcessCalls(t *testing.T) {
 
 	t.Run("CreatesCallRelationships", func(t *testing.T) {
 		g := graph.NewKnowledgeGraph()
-		
+
 		// Create function nodes
 		g.AddNode(&graph.GraphNode{ID: "function:a.go:Foo", Label: graph.NodeFunction, Name: "Foo", FilePath: "a.go"})
 		g.AddNode(&graph.GraphNode{ID: "function:b.go:Bar", Label: graph.NodeFunction, Name: "Bar", FilePath: "b.go"})
-		
+
 		parseData := &ParseData{
 			Files: map[string]*parsers.ParseResult{
 				"a.go": {
@@ -161,10 +161,10 @@ func TestProcessHeritage(t *testing.T) {
 
 	t.Run("CreatesExtendsRelationships", func(t *testing.T) {
 		g := graph.NewKnowledgeGraph()
-		
+
 		g.AddNode(&graph.GraphNode{ID: "class:a.go:Base", Label: graph.NodeClass, Name: "Base", FilePath: "a.go"})
 		g.AddNode(&graph.GraphNode{ID: "class:a.go:Derived", Label: graph.NodeClass, Name: "Derived", FilePath: "a.go"})
-		
+
 		parseData := &ParseData{
 			Files: map[string]*parsers.ParseResult{
 				"a.go": {
@@ -188,10 +188,10 @@ func TestProcessTypes(t *testing.T) {
 
 	t.Run("CreatesUsesTypeRelationships", func(t *testing.T) {
 		g := graph.NewKnowledgeGraph()
-		
+
 		g.AddNode(&graph.GraphNode{ID: "function:a.go:Foo", Label: graph.NodeFunction, Name: "Foo", FilePath: "a.go"})
 		g.AddNode(&graph.GraphNode{ID: "class:a.go:User", Label: graph.NodeClass, Name: "User", FilePath: "a.go"})
-		
+
 		parseData := &ParseData{
 			Files: map[string]*parsers.ParseResult{
 				"a.go": {
@@ -218,7 +218,7 @@ func TestRunPipeline(t *testing.T) {
 
 	t.Run("FullPipeline", func(t *testing.T) {
 		tmpDir := t.TempDir()
-		
+
 		// Create test Go files
 		files := map[string]string{
 			"main.go": `
@@ -258,11 +258,11 @@ type Database struct {}
 		// Run pipeline
 		ctx := context.Background()
 		graph, result, err := RunPipeline(ctx, tmpDir, store, false, nil, false)
-		
+
 		assert.NoError(t, err)
 		assert.NotNil(t, graph)
 		assert.NotNil(t, result)
-		
+
 		// Check results
 		assert.Greater(t, result.Files, 0)
 		assert.Greater(t, result.Symbols, 0)
@@ -281,14 +281,14 @@ func TestParseData(t *testing.T) {
 
 	t.Run("AddFile", func(t *testing.T) {
 		data := NewParseData()
-		
+
 		result := &parsers.ParseResult{
 			Package: "main",
 			Symbols: []parsers.ParsedSymbol{{Name: "Foo"}},
 		}
-		
+
 		data.AddFile("test.go", result)
-		
+
 		assert.Len(t, data.Files, 1)
 		assert.Equal(t, "main", data.Files["test.go"].Package)
 	})

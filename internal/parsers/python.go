@@ -215,11 +215,14 @@ func (p *PythonParser) extractCalls(line string, lineNum int) []CallSite {
 		}
 
 		// Check for method call (obj.method())
-		if idx := strings.LastIndex(line[:strings.Index(line, funcName)], "."); idx >= 0 {
-			before := line[:idx]
-			parts := strings.Fields(before)
-			if len(parts) > 0 {
-				call.Receiver = strings.TrimSpace(parts[len(parts)-1])
+		nameIdx := strings.Index(line, funcName)
+		if nameIdx > 0 {
+			if idx := strings.LastIndex(line[:nameIdx], "."); idx >= 0 {
+				before := line[:idx]
+				parts := strings.Fields(before)
+				if len(parts) > 0 {
+					call.Receiver = strings.TrimSpace(parts[len(parts)-1])
+				}
 			}
 		}
 

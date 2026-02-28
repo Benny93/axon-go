@@ -232,16 +232,16 @@ func TestGetAffectedSymbols(t *testing.T) {
 		// Create test graph with call relationships
 		g := graph.NewKnowledgeGraph()
 		g.AddNode(&graph.GraphNode{
-			ID:        "function:changed.go:ChangedFunc",
-			Label:     graph.NodeFunction,
-			Name:      "ChangedFunc",
-			FilePath:  "changed.go",
+			ID:       "function:changed.go:ChangedFunc",
+			Label:    graph.NodeFunction,
+			Name:     "ChangedFunc",
+			FilePath: "changed.go",
 		})
 		g.AddNode(&graph.GraphNode{
-			ID:        "function:caller.go:CallerFunc",
-			Label:     graph.NodeFunction,
-			Name:      "CallerFunc",
-			FilePath:  "caller.go",
+			ID:       "function:caller.go:CallerFunc",
+			Label:    graph.NodeFunction,
+			Name:     "CallerFunc",
+			FilePath: "caller.go",
 		})
 
 		// CallerFunc calls ChangedFunc
@@ -284,10 +284,10 @@ func TestGetAffectedSymbols(t *testing.T) {
 		// Create isolated node
 		g := graph.NewKnowledgeGraph()
 		g.AddNode(&graph.GraphNode{
-			ID:        "function:isolated.go:IsolatedFunc",
-			Label:     graph.NodeFunction,
-			Name:      "IsolatedFunc",
-			FilePath:  "isolated.go",
+			ID:       "function:isolated.go:IsolatedFunc",
+			Label:    graph.NodeFunction,
+			Name:     "IsolatedFunc",
+			FilePath: "isolated.go",
 		})
 
 		err = store.BulkLoad(t.Context(), g)

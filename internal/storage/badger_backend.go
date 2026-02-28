@@ -17,11 +17,11 @@ import (
 
 // Key prefixes for different data types
 const (
-	prefixNode       = "n:"       // node data
-	prefixRel        = "r:"       // relationship data
-	prefixIncoming   = "i:in:"    // incoming relationships
-	prefixOutgoing   = "i:out:"   // outgoing relationships
-	prefixEmbedding  = "e:"       // embedding data
+	prefixNode      = "n:"     // node data
+	prefixRel       = "r:"     // relationship data
+	prefixIncoming  = "i:in:"  // incoming relationships
+	prefixOutgoing  = "i:out:" // outgoing relationships
+	prefixEmbedding = "e:"     // embedding data
 )
 
 // BadgerBackend is a BadgerDB-backed storage implementation.

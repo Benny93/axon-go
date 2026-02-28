@@ -336,7 +336,7 @@ func ProcessImports(parseData *ParseData, g *graph.KnowledgeGraph) {
 			}
 
 			targetFileID := graph.GenerateID(graph.NodeFile, targetPath, "")
-			
+
 			// Only create relationship if target exists
 			if g.GetNode(targetFileID) != nil {
 				rel := &graph.GraphRelationship{
@@ -483,13 +483,13 @@ func findSymbolTarget(g *graph.KnowledgeGraph, name, receiver, pkgPath, sourceFi
 	if pkgPath != "" {
 		// Look for function by name across all files
 		nodes := g.GetNodesByLabel(graph.NodeFunction)
-		
+
 		// Extract package name from path (last component)
 		pkgName := pkgPath
 		if idx := strings.LastIndex(pkgPath, "/"); idx >= 0 {
 			pkgName = pkgPath[idx+1:]
 		}
-		
+
 		// First try to match by package name in file path
 		for _, n := range nodes {
 			if n.Name == name {
@@ -500,7 +500,7 @@ func findSymbolTarget(g *graph.KnowledgeGraph, name, receiver, pkgPath, sourceFi
 				}
 			}
 		}
-		
+
 		// If no exact package match, just match by name as fallback
 		for _, n := range nodes {
 			if n.Name == name {

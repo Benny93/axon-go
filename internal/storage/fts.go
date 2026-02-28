@@ -87,7 +87,7 @@ func (f *FTSIndex) IndexNode(node *graph.GraphNode) error {
 	defer txn.Discard()
 
 	// Delete old tokens for this node (for updates)
-	f.deleteNodeTokens(txn, node.ID)
+	_ = f.deleteNodeTokens(txn, node.ID)
 
 	// Tokenize searchable fields (name, signature, content)
 	text := node.Name + " " + node.Signature + " " + node.Content
@@ -131,7 +131,7 @@ func (f *FTSIndex) IndexNode(node *graph.GraphNode) error {
 func (f *FTSIndex) deleteNodeTokens(txn *badger.Txn, nodeID string) error {
 	// Find all tokens for this node by scanning
 	opts := badger.DefaultIteratorOptions
-	prefix := []byte(fmt.Sprintf("%s", prefixFTSToken))
+	prefix := []byte(prefixFTSToken)
 	opts.Prefix = prefix
 	it := txn.NewIterator(opts)
 	defer it.Close()

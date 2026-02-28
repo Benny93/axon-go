@@ -10,11 +10,11 @@ import (
 
 // MemoryBackend is an in-memory implementation of StorageBackend for testing.
 type MemoryBackend struct {
-	mu          sync.RWMutex
-	nodes       map[string]*graph.GraphNode
-	embeddings  map[string][]float32
-	indexed     bool
-	ftsIndexed  bool
+	mu         sync.RWMutex
+	nodes      map[string]*graph.GraphNode
+	embeddings map[string][]float32
+	indexed    bool
+	ftsIndexed bool
 }
 
 // NewMemoryBackend creates a new in-memory storage backend.

@@ -106,11 +106,9 @@ func parseGitLog(repoPath string, months int) ([][]string, error) {
 				changes = append(changes, currentCommit)
 			}
 			currentCommit = []string{}
-		} else {
+		} else if line != "" && !strings.HasPrefix(line, "COMMIT:") {
 			// File path
-			if line != "" && !strings.HasPrefix(line, "COMMIT:") {
-				currentCommit = append(currentCommit, line)
-			}
+			currentCommit = append(currentCommit, line)
 		}
 	}
 

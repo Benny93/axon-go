@@ -58,7 +58,7 @@ func TestMCPSymbolResolution(t *testing.T) {
 
 		// Create test graph with callers and callees
 		g := graph.NewKnowledgeGraph()
-		
+
 		// Add main function
 		g.AddNode(&graph.GraphNode{
 			ID:       "function:main.go:main",
@@ -66,7 +66,7 @@ func TestMCPSymbolResolution(t *testing.T) {
 			Name:     "main",
 			FilePath: "main.go",
 		})
-		
+
 		// Add RunPipeline function
 		g.AddNode(&graph.GraphNode{
 			ID:       "function:pipeline.go:RunPipeline",
@@ -74,7 +74,7 @@ func TestMCPSymbolResolution(t *testing.T) {
 			Name:     "RunPipeline",
 			FilePath: "pipeline.go",
 		})
-		
+
 		// Add helper function
 		g.AddNode(&graph.GraphNode{
 			ID:       "function:helper.go:HelperFunc",
@@ -119,7 +119,7 @@ func TestMCPSymbolResolution(t *testing.T) {
 
 		// Create test graph
 		g := graph.NewKnowledgeGraph()
-		
+
 		// Add functions
 		g.AddNode(&graph.GraphNode{
 			ID:       "function:main.go:main",

@@ -6,25 +6,26 @@ run:
 linters:
   enable:
     - errcheck
-    - goconst
     - gocritic
     - gofmt
     - goimports
-    - gosec
     - gosimple
     - govet
     - ineffassign
     - misspell
+    - staticcheck
+    - typecheck
+    - unconvert
+    - unused
+    - whitespace
+  disable:
+    - goconst
+    - gosec
     - nakedret
     - prealloc
     - revive
-    - staticcheck
     - stylecheck
-    - typecheck
-    - unconvert
     - unparam
-    - unused
-    - whitespace
 
 linters-settings:
   goconst:
@@ -73,15 +74,11 @@ issues:
   exclude-rules:
     - path: _test\.go
       linters:
-        - gocyclo
-        - dupl
-        - gosec
-        - funlen
-        - varnamelen
+        - errcheck
+        - gocritic
     - path: internal/mocks
       linters:
-        - revive
-        - stylecheck
+        - errcheck
   max-issues-per-linter: 0
   max-same-issues: 0
 

@@ -10,12 +10,12 @@ import (
 
 // TypeScriptParser parses TypeScript/TSX source code.
 type TypeScriptParser struct {
-	functionRegex *regexp.Regexp
-	classRegex    *regexp.Regexp
+	functionRegex  *regexp.Regexp
+	classRegex     *regexp.Regexp
 	interfaceRegex *regexp.Regexp
-	typeRegex     *regexp.Regexp
-	importRegex   *regexp.Regexp
-	callRegex     *regexp.Regexp
+	typeRegex      *regexp.Regexp
+	importRegex    *regexp.Regexp
+	callRegex      *regexp.Regexp
 }
 
 // NewTypeScriptParser creates a new TypeScript parser.
@@ -106,12 +106,15 @@ func (p *TypeScriptParser) parseFunctions(source, filePath string, result *Parse
 		}
 
 		sym := ParsedSymbol{
-			Name:       name,
-			Kind:       graph.NodeFunction,
-			StartLine:  lineNum,
-			EndLine:    lineNum,
-			Signature:  signature,
-			IsExported: strings.Contains(source[:strings.Index(source, match[0])], "export"),
+			Name:      name,
+			Kind:      graph.NodeFunction,
+			StartLine: lineNum,
+			EndLine:   lineNum,
+			Signature: signature,
+			IsExported: func() bool {
+				idx := strings.Index(source, match[0])
+				return idx >= 0 && strings.Contains(source[:idx], "export")
+			}(),
 		}
 
 		result.Symbols = append(result.Symbols, sym)
@@ -145,13 +148,16 @@ func (p *TypeScriptParser) parseFunctions(source, filePath string, result *Parse
 		}
 
 		sym := ParsedSymbol{
-			Name:       name,
-			Kind:       graph.NodeFunction,
-			
-			StartLine:  lineNum,
-			EndLine:    lineNum,
-			Signature:  fmt.Sprintf("const %s = (%s) => ...", name, params),
-			IsExported: strings.Contains(source[:strings.Index(source, match[0])], "export"),
+			Name: name,
+			Kind: graph.NodeFunction,
+
+			StartLine: lineNum,
+			EndLine:   lineNum,
+			Signature: fmt.Sprintf("const %s = (%s) => ...", name, params),
+			IsExported: func() bool {
+				idx := strings.Index(source, match[0])
+				return idx >= 0 && strings.Contains(source[:idx], "export")
+			}(),
 		}
 
 		result.Symbols = append(result.Symbols, sym)
@@ -185,13 +191,16 @@ func (p *TypeScriptParser) parseClasses(source, filePath string, result *ParseRe
 		}
 
 		sym := ParsedSymbol{
-			Name:       name,
-			Kind:       graph.NodeClass,
-			
-			StartLine:  lineNum,
-			EndLine:    lineNum,
-			Signature:  fmt.Sprintf("class %s", name),
-			IsExported: strings.Contains(source[:strings.Index(source, match[0])], "export"),
+			Name: name,
+			Kind: graph.NodeClass,
+
+			StartLine: lineNum,
+			EndLine:   lineNum,
+			Signature: fmt.Sprintf("class %s", name),
+			IsExported: func() bool {
+				idx := strings.Index(source, match[0])
+				return idx >= 0 && strings.Contains(source[:idx], "export")
+			}(),
 		}
 
 		result.Symbols = append(result.Symbols, sym)
@@ -217,7 +226,7 @@ func (p *TypeScriptParser) parseClasses(source, filePath string, result *ParseRe
 
 func (p *TypeScriptParser) parseClassMethods(source, filePath, className string, result *ParseResult) {
 	// Simple method regex - looks for methods within class body
-	methodRegex := regexp.MustCompile(fmt.Sprintf(`(?m)(?:async\s+)?(?:get|set)?\s*(\w+)\s*\(([^)]*)\)(?:\s*:\s*(\S+))?`))
+	methodRegex := regexp.MustCompile(`(?m)(?:async\s+)?(?:get|set)?\s*(\w+)\s*\(([^)]*)\)(?:\s*:\s*(\S+))?`)
 
 	// Find class body
 	classBodyRegex := regexp.MustCompile(fmt.Sprintf(`(?m)class\s+%s\s*{([^}]+)}`, className))
@@ -254,10 +263,10 @@ func (p *TypeScriptParser) parseClassMethods(source, filePath, className string,
 		}
 
 		sym := ParsedSymbol{
-			Name:       name,
-			Kind:       graph.NodeMethod,
-			ClassName:  className,
-			
+			Name:      name,
+			Kind:      graph.NodeMethod,
+			ClassName: className,
+
 			Signature:  signature,
 			IsExported: false, // Methods inherit export status from class
 		}
@@ -284,13 +293,16 @@ func (p *TypeScriptParser) parseInterfaces(source, filePath string, result *Pars
 		}
 
 		sym := ParsedSymbol{
-			Name:       name,
-			Kind:       graph.NodeInterface,
-			
-			StartLine:  lineNum,
-			EndLine:    lineNum,
-			Signature:  fmt.Sprintf("interface %s", name),
-			IsExported: strings.Contains(source[:strings.Index(source, match[0])], "export"),
+			Name: name,
+			Kind: graph.NodeInterface,
+
+			StartLine: lineNum,
+			EndLine:   lineNum,
+			Signature: fmt.Sprintf("interface %s", name),
+			IsExported: func() bool {
+				idx := strings.Index(source, match[0])
+				return idx >= 0 && strings.Contains(source[:idx], "export")
+			}(),
 		}
 
 		result.Symbols = append(result.Symbols, sym)
@@ -315,13 +327,16 @@ func (p *TypeScriptParser) parseTypes(source, filePath string, result *ParseResu
 		}
 
 		sym := ParsedSymbol{
-			Name:       name,
-			Kind:       graph.NodeTypeAlias,
-			
-			StartLine:  lineNum,
-			EndLine:    lineNum,
-			Signature:  fmt.Sprintf("type %s = ...", name),
-			IsExported: strings.Contains(source[:strings.Index(source, match[0])], "export"),
+			Name: name,
+			Kind: graph.NodeTypeAlias,
+
+			StartLine: lineNum,
+			EndLine:   lineNum,
+			Signature: fmt.Sprintf("type %s = ...", name),
+			IsExported: func() bool {
+				idx := strings.Index(source, match[0])
+				return idx >= 0 && strings.Contains(source[:idx], "export")
+			}(),
 		}
 
 		result.Symbols = append(result.Symbols, sym)

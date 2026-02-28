@@ -53,19 +53,19 @@ func TestKnowledgeGraph_AddNode(t *testing.T) {
 		g := NewKnowledgeGraph()
 
 		original := &GraphNode{
-			ID:       "function:test.py:foo",
-			Label:    NodeFunction,
-			Name:     "foo",
-			FilePath: "test.py",
+			ID:        "function:test.py:foo",
+			Label:     NodeFunction,
+			Name:      "foo",
+			FilePath:  "test.py",
 			StartLine: 10,
 		}
 		g.AddNode(original)
 
 		updated := &GraphNode{
-			ID:       "function:test.py:foo",
-			Label:    NodeFunction,
-			Name:     "foo",
-			FilePath: "test.py",
+			ID:        "function:test.py:foo",
+			Label:     NodeFunction,
+			Name:      "foo",
+			FilePath:  "test.py",
 			StartLine: 20,
 		}
 		g.AddNode(updated)
@@ -226,19 +226,19 @@ func TestKnowledgeGraph_AddRelationship(t *testing.T) {
 		g := NewKnowledgeGraph()
 
 		original := &GraphRelationship{
-			ID:     "calls:1",
-			Type:   RelCalls,
-			Source: "function:a.py:foo",
-			Target: "function:b.py:bar",
+			ID:         "calls:1",
+			Type:       RelCalls,
+			Source:     "function:a.py:foo",
+			Target:     "function:b.py:bar",
 			Properties: map[string]any{"confidence": 0.5},
 		}
 		g.AddRelationship(original)
 
 		updated := &GraphRelationship{
-			ID:     "calls:1",
-			Type:   RelCalls,
-			Source: "function:a.py:foo",
-			Target: "function:b.py:bar",
+			ID:         "calls:1",
+			Type:       RelCalls,
+			Source:     "function:a.py:foo",
+			Target:     "function:b.py:bar",
 			Properties: map[string]any{"confidence": 0.9},
 		}
 		g.AddRelationship(updated)

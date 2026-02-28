@@ -32,7 +32,7 @@ func WatchRepo(ctx context.Context, repoPath string, store storage.StorageBacken
 	if err != nil && err != context.Canceled {
 		return fmt.Errorf("creating watcher: %w", err)
 	}
-	defer watcher.Close()
+	defer func() { _ = watcher.Close() }()
 
 	// Watch the entire repo recursively
 	err = filepath.Walk(repoPath, func(path string, info os.FileInfo, err error) error {
@@ -169,7 +169,7 @@ func processChangedFiles(ctx context.Context, repoPath string, store storage.Sto
 
 		entries = append(entries, FileEntry{
 			RelPath:  relPath,
-			Path:  absPath,
+			Path:     absPath,
 			Language: language,
 			Content:  content,
 		})
@@ -203,37 +203,6 @@ func shouldWatchFile(path string, repoPath string, matcher gitignore.Matcher) bo
 	// Check if supported file type
 	language := getLanguage(path)
 	return language != ""
-}
-
-// shouldIgnoreDir checks if a directory should be ignored.
-func shouldIgnoreDir(name, path, repoPath string, matcher gitignore.Matcher) bool {
-	// Always ignore certain directories
-	ignoredDirs := []string{
-		".git",
-		"node_modules",
-		"vendor",
-		".axon",
-		"__pycache__",
-		".venv",
-		"venv",
-		"dist",
-		"build",
-	}
-
-	for _, ignored := range ignoredDirs {
-		if name == ignored {
-			return true
-		}
-	}
-
-	// Check gitignore matcher
-	if matcher != nil {
-		relPath, _ := filepath.Rel(repoPath, path)
-		pathParts := strings.Split(relPath, string(filepath.Separator))
-		return matcher.Match(pathParts, true)
-	}
-
-	return false
 }
 
 // shouldReindexGlobalPhases checks if enough time has passed since last global phase run.

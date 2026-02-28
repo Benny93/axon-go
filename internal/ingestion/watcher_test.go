@@ -41,7 +41,7 @@ func TestReindexFiles(t *testing.T) {
 		entries := []FileEntry{
 			{
 				RelPath:  "test.go",
-				Path:  filepath.Join(tmpDir, "test.go"),
+				Path:     filepath.Join(tmpDir, "test.go"),
 				Language: "go",
 				Content:  []byte("package main\n\nfunc NewFunc() {}"),
 			},
@@ -112,7 +112,7 @@ func TestReindexFiles(t *testing.T) {
 		entries := []FileEntry{
 			{
 				RelPath:  "README.md",
-				Path:  filepath.Join(tmpDir, "README.md"),
+				Path:     filepath.Join(tmpDir, "README.md"),
 				Language: "", // Unsupported
 				Content:  []byte("# README"),
 			},
@@ -137,7 +137,7 @@ func TestReindexFiles(t *testing.T) {
 		entries := []FileEntry{
 			{
 				RelPath:  ".git/config",
-				Path:  filepath.Join(tmpDir, ".git", "config"),
+				Path:     filepath.Join(tmpDir, ".git", "config"),
 				Language: "",
 				Content:  []byte("[core]"),
 			},

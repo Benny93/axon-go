@@ -25,10 +25,10 @@ type KnowledgeGraph struct {
 	relationships map[string]*GraphRelationship
 
 	// Secondary indexes — kept in sync by add/remove helpers.
-	byLabel     map[NodeLabel]map[string]*GraphNode
-	byRelType   map[RelType]map[string]*GraphRelationship
-	outgoing    map[string]map[string]*GraphRelationship
-	incoming    map[string]map[string]*GraphRelationship
+	byLabel   map[NodeLabel]map[string]*GraphNode
+	byRelType map[RelType]map[string]*GraphRelationship
+	outgoing  map[string]map[string]*GraphRelationship
+	incoming  map[string]map[string]*GraphRelationship
 }
 
 // NewKnowledgeGraph creates a new empty knowledge graph.

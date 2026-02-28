@@ -238,10 +238,10 @@ func TestBadgerBackend_AddRelationships(t *testing.T) {
 
 	t.Run("AddSingle", func(t *testing.T) {
 		rel := &graph.GraphRelationship{
-			ID:     "calls:1",
-			Type:   graph.RelCalls,
-			Source: "function:a.py:foo",
-			Target: "function:b.py:bar",
+			ID:         "calls:1",
+			Type:       graph.RelCalls,
+			Source:     "function:a.py:foo",
+			Target:     "function:b.py:bar",
 			Properties: map[string]any{"confidence": 0.9},
 		}
 

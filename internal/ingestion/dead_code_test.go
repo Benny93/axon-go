@@ -165,28 +165,28 @@ func TestIsDeadCodeExempt(t *testing.T) {
 		expected bool
 	}{
 		{
-			name: "EntryPoint",
-			node: &graph.GraphNode{Name: "main", IsEntryPoint: true},
+			name:     "EntryPoint",
+			node:     &graph.GraphNode{Name: "main", IsEntryPoint: true},
 			expected: true,
 		},
 		{
-			name: "Exported",
-			node: &graph.GraphNode{Name: "ExportedFunction", IsExported: true},
+			name:     "Exported",
+			node:     &graph.GraphNode{Name: "ExportedFunction", IsExported: true},
 			expected: true,
 		},
 		{
-			name: "TestFunction",
-			node: &graph.GraphNode{Name: "TestFoo", FilePath: "main_test.go", Label: graph.NodeFunction},
+			name:     "TestFunction",
+			node:     &graph.GraphNode{Name: "TestFoo", FilePath: "main_test.go", Label: graph.NodeFunction},
 			expected: true,
 		},
 		{
-			name: "DunderMethod",
-			node: &graph.GraphNode{Name: "__init__", ClassName: "MyClass"},
+			name:     "DunderMethod",
+			node:     &graph.GraphNode{Name: "__init__", ClassName: "MyClass"},
 			expected: true,
 		},
 		{
-			name: "RegularFunction",
-			node: &graph.GraphNode{Name: "helper"},
+			name:     "RegularFunction",
+			node:     &graph.GraphNode{Name: "helper"},
 			expected: false,
 		},
 	}

@@ -61,7 +61,7 @@ func (c *AnalyzeCmd) Run() error {
 	if err := store.Initialize(dbPath, false); err != nil {
 		return fmt.Errorf("initializing storage: %w", err)
 	}
-	defer store.Close()
+	defer func() { _ = store.Close() }()
 
 	// Run pipeline
 	var result *ingestion.PipelineResult
@@ -122,7 +122,7 @@ func (c *QueryCmd) Run() error {
 	if err != nil {
 		return err
 	}
-	defer store.Close()
+	defer func() { _ = store.Close() }()
 
 	results, err := store.FTSSearch(ctx, c.Query, c.Limit)
 	if err != nil {
@@ -161,7 +161,7 @@ func (c *ContextCmd) Run() error {
 	if err != nil {
 		return err
 	}
-	defer store.Close()
+	defer func() { _ = store.Close() }()
 
 	ctx := context.Background()
 
@@ -248,7 +248,7 @@ func (c *ImpactCmd) Run() error {
 	if err != nil {
 		return err
 	}
-	defer store.Close()
+	defer func() { _ = store.Close() }()
 
 	ctx := context.Background()
 
@@ -326,7 +326,7 @@ func (c *DeadCodeCmd) Run() error {
 	if err != nil {
 		return err
 	}
-	defer store.Close()
+	defer func() { _ = store.Close() }()
 
 	ctx := context.Background()
 
@@ -396,7 +396,7 @@ func (c *CypherCmd) Run() error {
 	if err != nil {
 		return err
 	}
-	defer store.Close()
+	defer func() { _ = store.Close() }()
 
 	fmt.Println("## Cypher Query Support")
 	fmt.Println("Raw Cypher queries are not yet supported with BadgerDB backend.")
@@ -428,7 +428,7 @@ func (c *WatchCmd) Run() error {
 	if err != nil {
 		return err
 	}
-	defer store.Close()
+	defer func() { _ = store.Close() }()
 
 	fmt.Println("## Watch Mode")
 	fmt.Printf("Watching %s for changes (Ctrl+C to stop)\n\n", repoPath)
@@ -741,7 +741,7 @@ func (c *MCPCmd) Run() error {
 	if err != nil {
 		return err
 	}
-	defer store.Close()
+	defer func() { _ = store.Close() }()
 
 	server := mcp.NewServer(store)
 
@@ -761,7 +761,7 @@ func (c *ServeCmd) Run() error {
 	if err != nil {
 		return err
 	}
-	defer store.Close()
+	defer func() { _ = store.Close() }()
 
 	server := mcp.NewServer(store)
 
@@ -918,7 +918,7 @@ func (c *CleanCmd) Run() error {
 	if !c.Force {
 		fmt.Printf("Delete index at %s? [y/N] ", axonDir)
 		var response string
-		fmt.Scanln(&response)
+		_, _ = fmt.Scanln(&response)
 		if response != "y" && response != "Y" {
 			fmt.Println("Aborted")
 			return nil

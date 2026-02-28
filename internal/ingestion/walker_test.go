@@ -19,14 +19,14 @@ func TestWalkRepo(t *testing.T) {
 
 	// Create test files
 	testFiles := map[string]string{
-		"main.py":          "print('hello')",
-		"utils.py":         "def helper(): pass",
-		"test_main.py":     "def test_main(): pass",
-		"src/app.py":       "class App: pass",
-		"src/lib/utils.py": "def util(): pass",
-		"README.md":        "# README",
-		".gitignore":       "*.pyc\n__pycache__/",
-		"cache.pyc":        "binary",
+		"main.py":             "print('hello')",
+		"utils.py":            "def helper(): pass",
+		"test_main.py":        "def test_main(): pass",
+		"src/app.py":          "class App: pass",
+		"src/lib/utils.py":    "def util(): pass",
+		"README.md":           "# README",
+		".gitignore":          "*.pyc\n__pycache__/",
+		"cache.pyc":           "binary",
 		"__pycache__/mod.pyc": "binary",
 	}
 

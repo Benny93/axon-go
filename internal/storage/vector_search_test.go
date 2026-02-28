@@ -46,7 +46,7 @@ func TestVectorSearch(t *testing.T) {
 
 		// Create test graph with embeddings
 		g := graph.NewKnowledgeGraph()
-		
+
 		// Add nodes
 		g.AddNode(&graph.GraphNode{
 			ID:       "function:test.go:FuncA",

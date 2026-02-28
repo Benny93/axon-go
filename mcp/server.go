@@ -339,7 +339,7 @@ func (s *Server) handleToolsList(id any) map[string]any {
 	for i, tool := range tools {
 		schema, _ := json.Marshal(tool.InputSchema)
 		var schemaMap map[string]any
-		json.Unmarshal(schema, &schemaMap)
+		_ = json.Unmarshal(schema, &schemaMap)
 
 		toolList[i] = map[string]any{
 			"name":        tool.Name,
@@ -705,7 +705,7 @@ func handleCypher(storage StorageBackend, query string) (string, error) {
 	}
 
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("## Cypher Query Result\n\n"))
+	sb.WriteString("## Cypher Query Result\n\n")
 	sb.WriteString(fmt.Sprintf("Query: `%s`\n\n", query))
 	sb.WriteString("Raw Cypher queries are not yet supported. This feature will allow advanced graph queries.\n")
 

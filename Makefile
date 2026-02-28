@@ -41,7 +41,7 @@ GOTESTSUM := gotestsum
 GORELEASER := goreleaser
 
 # Go version check
-GO_VERSION := $(shell $(GOCMD) version | cut -d' ' -f3 | cut -c3-4)
+GO_VERSION := $(shell $(GOCMD) version | cut -d' ' -f3 | sed 's/go//' | cut -d'.' -f2)
 REQUIRED_GO_VERSION := 23
 
 # Colors for output
