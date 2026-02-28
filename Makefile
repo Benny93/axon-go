@@ -93,7 +93,7 @@ build-all: build build-debug build-race ## Build all variants
 
 install: check-go-version ## Install the binary to GOPATH/bin
 	@echo "$(BLUE)Installing $(BINARY_NAME)...$(NC)"
-	$(GOINSTALL) $(BUILD_FLAGS) $(LDFLAGS) .
+	$(GOCMD) install $(BUILD_FLAGS) $(LDFLAGS) .
 	@echo "$(GREEN)✓ Installation complete$(NC)"
 
 clean: ## Clean build artifacts

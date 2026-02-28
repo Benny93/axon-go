@@ -92,22 +92,35 @@ Axon-Go provides 7 MCP tools for AI code agents:
 
 ### Example MCP Configuration
 
+
+Important! Before you can use it with your project you need to run `axon-go analyze .` in your project.
+
+Example config for qwen-cli in ~/.qwen/settings.json
 ```json
-{
+...
+ "mcp": {
+    "allowed": ["axon-go"]
+  },
   "mcpServers": {
     "axon-go": {
-      "command": "axon-go",
-      "args": ["serve", "--watch"],
+      "args": [
+        "serve",
+        "--watch"
+      ],
+      "command": "<pathtoGoBin>/go/bin/axon-go",
+      "timeout": 60000,
+      "trust": true,
+      "env": {},
       "includeTools": [
         "axon_query",
         "axon_context",
         "axon_impact",
         "axon_dead_code",
-        "axon_detect_changes"
+        "axon_list_repos",
+        "axon_cypher"
       ]
     }
   }
-}
 ```
 
 ---
