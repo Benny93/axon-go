@@ -235,6 +235,90 @@ flowchart TD
 
 ---
 
+## Examples
+
+### MCP Tool Usage
+
+Axon-Go's knowledge graph (powered by BadgerDB) is exposed through MCP tools. Here's how AI agents interact with it:
+
+**Start the MCP server:**
+```bash
+axon-go serve --watch
+```
+
+**Example tool calls:**
+
+```json
+// 1. Search for symbols related to "authentication"
+{
+  "tool": "axon_query",
+  "arguments": {
+    "query": "authentication handler",
+    "limit": 10
+  }
+}
+
+// 2. Get 360° view of a symbol (callers, callees, type refs)
+{
+  "tool": "axon_context",
+  "arguments": {
+    "symbol": "UserService.ValidateUser"
+  }
+}
+
+// 3. Analyze blast radius before refactoring
+{
+  "tool": "axon_impact",
+  "arguments": {
+    "symbol": "Database.Connect",
+    "depth": 2
+  }
+}
+
+// 4. Find unreachable/dead code
+{
+  "tool": "axon_dead_code"
+}
+
+// 5. Detect changes and their impact
+{
+  "tool": "axon_detect_changes",
+  "arguments": {
+    "paths": ["src/auth.go", "src/user.go"]
+  }
+}
+
+// 6. List all indexed repositories
+{
+  "tool": "axon_list_repos"
+}
+```
+
+**Example workflow: Refactoring a function**
+
+1. **Find the symbol:** `axon_query("user validation logic")`
+2. **Understand dependencies:** `axon_context("UserService.ValidateUser")`
+3. **Check impact:** `axon_impact("UserService.ValidateUser", depth=2)`
+4. **Make changes** (AI edits code)
+5. **Verify no breakage:** `axon_detect_changes(paths=["src/user.go"])`
+
+### BadgerDB Backend (Internal)
+
+The MCP tools query a knowledge graph stored in BadgerDB. Key storage methods:
+
+| Method | Description |
+|--------|-------------|
+| `Initialize(path, readOnly)` | Open BadgerDB at path |
+| `GetNode(ctx, id)` | Retrieve a graph node |
+| `GetCallers(ctx, symbol)` | Find all callers of a symbol |
+| `GetCallees(ctx, symbol)` | Find all symbols called by this one |
+| `HybridSearch(ctx, query, limit)` | Combined keyword + vector search |
+| `VectorSearch(ctx, vector, limit)` | Semantic search via embeddings |
+| `GetDeadCode(ctx)` | Find unreachable symbols |
+| `GetNodesByLabel(ctx, label)` | Query nodes by label |
+
+---
+
 ## Project Structure
 
 ```
