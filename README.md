@@ -150,6 +150,54 @@ Example config for qwen-cli in ~/.qwen/settings.json
 
 Axon-Go processes code through 12 phases:
 
+```mermaid
+flowchart TD
+    A[Source Code<br/>Go, Python, TS/JS] --> B[Phase 1: File Walking<br/>Discover files, respect .gitignore]
+    
+    subgraph Structure[Structure Analysis]
+        B --> C[Phase 2: Structure<br/>File/Folder nodes]
+        C --> D[Phase 3: Parsing<br/>Extract symbols]
+        D --> E[Phase 4: Imports<br/>Resolve imports]
+        E --> F[Phase 5: Calls<br/>Trace call chains]
+        F --> G[Phase 6: Heritage<br/>Inheritance/interfaces]
+        G --> H[Phase 7: Types<br/>Type references]
+    end
+    
+    subgraph Analysis[Global Analysis]
+        H --> I[Phase 8: Communities<br/>Louvain clustering]
+        I --> J[Phase 9: Processes<br/>Execution flows]
+        J --> K[Phase 10: Dead Code<br/>3-pass analysis]
+        K --> L[Phase 11: Git Coupling<br/>Co-change history]
+    end
+    
+    subgraph Storage[Storage & Indexing]
+        L --> M[Phase 12: Embeddings<br/>TF-IDF vectors]
+        M --> N[(BadgerDB<br/>Key-Value Store)]
+        M --> O[FTS Index<br/>BM25]
+        M --> P[Vector Index<br/>Cosine Similarity]
+    end
+    
+    subgraph Access[Access Layer]
+        N --> Q[MCP Server<br/>7 Tools]
+        O --> Q
+        P --> Q
+        N --> R[CLI<br/>13 Commands]
+        O --> R
+        P --> R
+    end
+    
+    subgraph Consumers[Consumers]
+        Q --> S[AI Agents<br/>Claude Code, Cursor]
+        R --> T[Developers<br/>Terminal]
+    end
+    
+    style Structure fill:#e1f5ff
+    style Analysis fill:#fff4e1
+    style Storage fill:#e8f5e9
+    style Access fill:#f3e5f5
+    style Consumers fill:#ffebee
+```
+
 | Phase | Name | Description |
 |-------|------|-------------|
 | 1 | File Walking | Discovers files, respects .gitignore |
