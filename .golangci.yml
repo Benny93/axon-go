@@ -34,24 +34,11 @@ linters:
         linters:
           - errcheck
 
-linters-settings:
-  goconst:
-    min-len: 3
-    min-occurrences: 3
-  gocritic:
-    enabled-checks:
-      - commentedOutCode
-      - nilValReturn
-      - sloppyReassign
-      - weakCond
-      - octalLiteral
-      - filepathJoin
-      - preferFprint
-
 formatters:
   enable:
     - gofmt
     - goimports
   settings:
     goimports:
-      local-prefixes: github.com/axon-go/axon-go
+      local-prefixes:
+        - github.com/axon-go/axon-go
