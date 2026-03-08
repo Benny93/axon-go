@@ -1,6 +1,6 @@
 module github.com/Benny93/axon-go
 
-go 1.25.0
+go 1.26.1
 
 require (
 	github.com/alecthomas/kong v1.14.0
